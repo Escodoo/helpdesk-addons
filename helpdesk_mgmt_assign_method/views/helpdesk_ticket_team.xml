@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 - TODAY, Marcel Savegnago <marcel.savegnago@escodoo.com.br>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="helpdesk_ticket_team_form_view">
+        <field
+            name="name"
+        >helpdesk.ticket.team.form (in helpdesk_mgmt_assign_method)</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_team_form" />
+        <field name="arch" type="xml">
+            <group name="main" position="after">
+                <group name="assign_method">
+                    <div
+                        title="With random assignation, every user gets the same number of tickets. With balanced assignation, tickets are assigned to the user with the least amount of open tickets."
+                    >
+                        <div>
+                            <label for="assign_method" />
+                            <div class="text-muted">
+                                How to assign newly created tickets to the right person
+                            </div>
+                            <div>
+                                <field name="assign_method" class="mt16" />
+                            </div>
+                        </div>
+                    </div>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>
