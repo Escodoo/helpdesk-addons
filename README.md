@@ -1,5 +1,6 @@
 <!-- [![Runbot Status](https://runbot.odoo-community.org/runbot/badge/flat//12.0.svg)](https://runbot.odoo-community.org/runbot/repo/github-com-oca-helpdesk-addons-) -->
 <!-- [![Build Status](https://travis-ci.com/Escodoo/helpdesk-addons.svg?branch=12.0)](https://travis-ci.com/Escodoo/helpdesk-addons) -->
+[![tests](https://github.com/Escodoo/helpdesk-addons/actions/workflows/test.yml/badge.svg)](https://github.com/Escodoo/helpdesk-addons/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/Escodoo/helpdesk-addons/branch/12.0/graph/badge.svg)](https://codecov.io/gh/Escodoo/helpdesk-addons)
 <!-- [![Translation Status](https://translation.odoo-community.org/widgets/helpdesk-addons-12-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/helpdesk-addons-12-0/?utm_source=widget) -->
 
