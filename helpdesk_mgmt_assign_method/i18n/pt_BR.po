@@ -28,12 +28,14 @@ msgid ""
 "Automatic assignation method for new tickets:\n"
 "\tManually: manual\n"
 "\tRandomly: randomly but everyone gets the same amount\n"
-"\tBalanced: to the person with the least amount of open tickets"
+"\tBalanced: to the person with the least amount of open tickets\n"
+"\Sequential: ensuring an even distribution among team members"
 msgstr ""
 "Método de atribuição automática para novos tíquetes:\n"
 "\tManualmente: manual\n"
 "\tAleatoriamente: aleatoriamente, mas todos recebem a mesma quantidade\n"
-"\tEquilibrado: para a pessoa com a menor quantidade de tíquetes abertos"
+"\tEquilibrado: para a pessoa com a menor quantidade de tíquetes abertos\n"
+"\tSequencial: distribuição uniforme entre os membros da equipe"
 
 #. module: helpdesk_mgmt_assign_method
 #: selection:helpdesk.ticket.team,assign_method:0
@@ -66,15 +68,22 @@ msgid "Randomly"
 msgstr "Aleatoriamente"
 
 #. module: helpdesk_mgmt_assign_method
+#: selection:helpdesk.ticket.team,assign_method:0
+msgid "Sequential"
+msgstr "Sequencial"
+
+#. module: helpdesk_mgmt_assign_method
 #: model_terms:ir.ui.view,arch_db:helpdesk_mgmt_assign_method.helpdesk_ticket_team_form_view
 msgid ""
 "With random assignation, every user gets the same number of tickets. With "
 "balanced assignation, tickets are assigned to the user with the least amount "
-"of open tickets."
+"of open tickets. With sequential assignation, tickets are even distribution "
+"among team members."
 msgstr ""
 "Com a atribuição aleatória, cada usuário recebe o mesmo número de tickets. "
 "Com atribuição balanceada, os tickets são atribuídos ao usuário com a menor "
-"quantidade de tickets abertos."
+"quantidade de tickets abertos. Com atribuição sequencial, os tickets são "
+"distribuídos uniformemente entre os membros da equipe."
 
 #. module: helpdesk_mgmt_assign_method
 #: code:addons/helpdesk_mgmt_assign_method/models/helpdesk_ticket_team.py:31

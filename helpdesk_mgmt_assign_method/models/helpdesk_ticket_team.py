@@ -9,14 +9,20 @@ class HelpdeskTicketTeam(models.Model):
     _inherit = "helpdesk.ticket.team"
 
     assign_method = fields.Selection(
-        [("manual", "Manually"), ("randomly", "Randomly"), ("balanced", "Balanced")],
+        [
+            ("manual", "Manually"),
+            ("randomly", "Randomly"),
+            ("balanced", "Balanced"),
+            ("sequential", "Sequential"),
+        ],
         string="Assignation Method",
         default="manual",
         required=True,
         help="Automatic assignation method for new tickets:\n"
         "\tManually: manual\n"
         "\tRandomly: randomly but everyone gets the same amount\n"
-        "\tBalanced: to the person with the least amount of open tickets",
+        "\tBalanced: to the person with the least amount of open tickets\n"
+        "\tSequential: ensuring an even distribution among team members",
     )
 
     @api.onchange("user_ids")
@@ -47,6 +53,9 @@ class HelpdeskTicketTeam(models.Model):
 
         if self.assign_method == "balanced":
             return self._assign_balanced(user_ids, new_user)
+
+        if self.assign_method == "sequential":
+            return self._assign_sequential(user_ids, new_user)
 
         return new_user
 
@@ -87,5 +96,45 @@ class HelpdeskTicketTeam(models.Model):
 
         # Find the user with the minimum number of open tickets
         new_user = new_user.browse(min(count_dict, key=count_dict.get))
+
+        return new_user
+
+    def _assign_sequential(self, user_ids, new_user):
+        # Count open tickets per user
+        read_group_res = self.env["helpdesk.ticket"].read_group(
+            [("stage_id.closed", "=", False), ("user_id", "in", user_ids)],
+            ["user_id"],
+            ["user_id"],
+        )
+
+        # Initialize counts for all users, including those with zero open tickets
+        count_dict = {m_id: 0 for m_id in user_ids}
+        count_dict.update(
+            (data["user_id"][0], data["user_id_count"]) for data in read_group_res
+        )
+
+        # Find the user with the minimum number of open tickets
+        min_count_user_id = min(count_dict, key=count_dict.get)
+        new_user = self.env["res.users"].browse(min_count_user_id)
+
+        # Get the number of tickets to be evenly distributed
+        total_tickets = len(
+            self.env["helpdesk.ticket"].search([("stage_id.closed", "=", False)])
+        )
+        tickets_per_user = total_tickets // len(user_ids)
+
+        # Assign tickets to users
+        for user_id in user_ids:
+            tickets_assigned = count_dict[user_id]
+            tickets_to_assign = tickets_per_user - tickets_assigned
+
+            # Assign new tickets to the user if needed
+            for _user_assign in range(tickets_to_assign):
+                ticket_to_assign = self.env["helpdesk.ticket"].search(
+                    [("stage_id.closed", "=", False), ("user_id", "=", False)], limit=1
+                )
+                if ticket_to_assign:
+                    ticket_to_assign.write({"user_id": user_id})
+                    count_dict[user_id] += 1
 
         return new_user
