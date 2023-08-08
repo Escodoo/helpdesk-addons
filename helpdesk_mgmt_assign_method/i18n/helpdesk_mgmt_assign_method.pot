@@ -57,8 +57,13 @@ msgid "Randomly"
 msgstr ""
 
 #. module: helpdesk_mgmt_assign_method
+#: selection:helpdesk.ticket.team,assign_method:0
+msgid "Sequential"
+msgstr ""
+
+#. module: helpdesk_mgmt_assign_method
 #: model_terms:ir.ui.view,arch_db:helpdesk_mgmt_assign_method.helpdesk_ticket_team_form_view
-msgid "With random assignation, every user gets the same number of tickets. With balanced assignation, tickets are assigned to the user with the least amount of open tickets."
+msgid "With random assignation, every user gets the same number of tickets. With balanced assignation, tickets are assigned to the user with the least amount of open tickets. With sequential assignation, tickets are even distribution among team members."
 msgstr ""
 
 #. module: helpdesk_mgmt_assign_method
