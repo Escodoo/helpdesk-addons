@@ -102,7 +102,11 @@ class HelpdeskTicketTeam(models.Model):
     def _assign_sequential(self, user_ids, new_user):
         # Count open tickets per user
         read_group_res = self.env["helpdesk.ticket"].read_group(
-            [("stage_id.closed", "=", False), ("user_id", "in", user_ids)],
+            [
+                ("stage_id.closed", "=", False),
+                ("user_id", "in", user_ids),
+                ("team_id", "=", self.id),
+            ],
             ["user_id"],
             ["user_id"],
         )
@@ -131,7 +135,12 @@ class HelpdeskTicketTeam(models.Model):
             # Assign new tickets to the user if needed
             for _user_assign in range(tickets_to_assign):
                 ticket_to_assign = self.env["helpdesk.ticket"].search(
-                    [("stage_id.closed", "=", False), ("user_id", "=", False)], limit=1
+                    [
+                        ("stage_id.closed", "=", False),
+                        ("user_id", "=", False),
+                        ("team_id", "=", self.id),
+                    ],
+                    limit=1,
                 )
                 if ticket_to_assign:
                     ticket_to_assign.write({"user_id": user_id})
