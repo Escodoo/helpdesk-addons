@@ -100,50 +100,27 @@ class HelpdeskTicketTeam(models.Model):
         return new_user
 
     def _assign_sequential(self, user_ids, new_user):
-        # Count open tickets per user
-        read_group_res = self.env["helpdesk.ticket"].read_group(
-            [
-                ("stage_id.closed", "=", False),
-                ("user_id", "in", user_ids),
-                ("team_id", "=", self.id),
-            ],
-            ["user_id"],
-            ["user_id"],
-        )
-
-        # Initialize counts for all users, including those with zero open tickets
-        count_dict = {m_id: 0 for m_id in user_ids}
-        count_dict.update(
-            (data["user_id"][0], data["user_id_count"]) for data in read_group_res
-        )
-
-        # Find the user with the minimum number of open tickets
-        min_count_user_id = min(count_dict, key=count_dict.get)
-        new_user = self.env["res.users"].browse(min_count_user_id)
-
-        # Get the number of tickets to be evenly distributed
-        total_tickets = len(
-            self.env["helpdesk.ticket"].search([("stage_id.closed", "=", False)])
-        )
-        tickets_per_user = total_tickets // len(user_ids)
-
-        # Assign tickets to users
-        for user_id in user_ids:
-            tickets_assigned = count_dict[user_id]
-            tickets_to_assign = tickets_per_user - tickets_assigned
-
-            # Assign new tickets to the user if needed
-            for _user_assign in range(tickets_to_assign):
-                ticket_to_assign = self.env["helpdesk.ticket"].search(
-                    [
-                        ("stage_id.closed", "=", False),
-                        ("user_id", "=", False),
-                        ("team_id", "=", self.id),
-                    ],
+        # Get the last assigned user index
+        previous_assigned_user_index = (
+            user_ids.index(
+                self.env["helpdesk.ticket"]
+                .search(
+                    [("team_id", "=", self.id)],
+                    order="create_date desc, id desc",
                     limit=1,
                 )
-                if ticket_to_assign:
-                    ticket_to_assign.write({"user_id": user_id})
-                    count_dict[user_id] += 1
+                .user_id.id
+            )
+            if self.env["helpdesk.ticket"]
+            .search(
+                [("team_id", "=", self.id)], order="create_date desc, id desc", limit=1
+            )
+            .user_id
+            else -1
+        )
+
+        # Calculate the index of the next user cyclically
+        next_index = (previous_assigned_user_index + 1) % len(user_ids)
+        new_user = new_user.browse(user_ids[next_index])
 
         return new_user
